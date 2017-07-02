@@ -1,0 +1,25 @@
+.board-element {
+    display: inline-block;
+    border: 1px solid black;
+    padding: 3px 12px;
+    margin: 1px;
+    cursor: pointer;
+    background-color: grey;
+    width: 11px;
+    height: 22px;
+    text-align: center;
+    line-height: 22px;
+}
+
+.board-element.revealed {
+    background-color: lightgrey;
+}
+
+.board-header {
+    width: 88px;
+    margin: 14px auto;
+}
+
+.board-header div {
+    display: inline-block;
+}
