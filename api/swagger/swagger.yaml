@@ -3,9 +3,9 @@ info:
   version: "0.0.1"
   title: Minesweeper
 host: localhost:8080
-# basePath prefixes all resource paths 
+# basePath prefixes all resource paths
 basePath: /
-# 
+#
 schemes:
   - http
   - https
@@ -61,33 +61,72 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+  /flag/{column}/{row}:
+    x-swagger-router-controller: minesweeper
+    post:
+      description: Flags the selected position. Toggles if already flagged.
+      operationId: flag
+      parameters:
+        - name: column
+          in: path
+          description: The number of the column
+          required: true
+          type: integer
+        - name: row
+          in: path
+          description: The number of the row
+          required: true
+          type: integer
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/FlagResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
   /swagger:
     x-swagger-pipe: swagger_raw
 definitions:
   RevealResponse:
     description: This is the information related to the revealed spots.
-    type: array
-    items:
-      type: object
-      properties:
-        adjacent:
-          type: integer
-          description: The number of adjacent mines.
-        flagged:
-          type: string
-          description: Flagged option.
-        hasMine:
-          type: boolean
-          description: Describes if there is a mine or not.
-        revealed:
-          type: boolean
-          description: Describes if the position is revealed or not.
-        x:
-          type: integer
-          description: X coordinate of the board.
-        y:
-          type: integer
-          description: Y coordinate of the board.
+    type: object
+    properties:
+      gameFinished:
+        type: boolean
+      gameWon:
+        type: boolean
+      revealResult:
+        type: array
+        items:
+          type: object
+          properties:
+            adjacent:
+              type: integer
+              description: The number of adjacent mines.
+            flag:
+              type: string
+              description: flag option.
+            hasMine:
+              type: boolean
+              description: Describes if there is a mine or not.
+            revealed:
+              type: boolean
+              description: Describes if the position is revealed or not.
+            x:
+              type: integer
+              description: X coordinate of the board.
+            y:
+              type: integer
+              description: Y coordinate of the board.
+  FlagResponse:
+    description: This is the information related to the revealed spots.
+    type: object
+    properties:
+      flag:
+        type: string
+        description: flag option.
   GameOptions:
     required:
       - rows
