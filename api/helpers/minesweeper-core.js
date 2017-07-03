@@ -152,6 +152,24 @@ class Minesweeper {
     }
     return {flag: boardPlace.flag};
   }
+
+  /**
+   * Retrieves current board status
+   * @return {Array}
+   */
+  getBoardStatus() {
+    const boardData = [];
+    for(let x = 0; x < this.columns; x += 1) {
+      for(let y = 0; y < this.rows; y += 1) {
+        const boardPlace = this.board[x][y];
+        if (boardPlace.revealed || boardPlace.flag !== '') {
+          boardData.push(Object.assign(boardPlace, {x, y}));
+        }
+      }
+    }
+    return boardData;
+  }
+
 }
 
 module.exports = Minesweeper;

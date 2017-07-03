@@ -1,12 +1,18 @@
 'use strict';
 
 var SwaggerExpress = require('swagger-express-mw');
+var CookieSession = require('cookie-session');
 var express = require('express');
 var app = express();
 
 var config = {
   appRoot: __dirname
 };
+
+app.use(CookieSession({
+  name: 'session',
+  keys: ['key1', 'key2']
+}));
 
 //serve public folder
 app.use(express.static('public'));

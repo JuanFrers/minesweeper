@@ -26,11 +26,12 @@ var apiClient = (function() {
         });
     }
 
-    function startGame(columns, rows, mines) {
+    function startGame(columns, rows, mines, restore = false) {
         const gameOptions = {
             columns,
             rows,
-            mines
+            mines,
+            restore
         };
         return request('/start', 'POST', null, gameOptions);
     }

@@ -98,28 +98,7 @@ definitions:
       gameWon:
         type: boolean
       revealResult:
-        type: array
-        items:
-          type: object
-          properties:
-            adjacent:
-              type: integer
-              description: The number of adjacent mines.
-            flag:
-              type: string
-              description: flag option.
-            hasMine:
-              type: boolean
-              description: Describes if there is a mine or not.
-            revealed:
-              type: boolean
-              description: Describes if the position is revealed or not.
-            x:
-              type: integer
-              description: X coordinate of the board.
-            y:
-              type: integer
-              description: Y coordinate of the board.
+        $ref: "#/definitions/BoardStatus"
   FlagResponse:
     description: This is the information related to the revealed spots.
     type: object
@@ -139,10 +118,49 @@ definitions:
         type: integer
       mines:
         type: integer
+      restore:
+        type: boolean
   StartGameResponse:
+    required:
+      - success
     properties:
         success:
           type: boolean
+        gameStatus:
+          type: object
+          description: If there is an active game, there will be a status about the game.
+          properties:
+            rows:
+              type: integer
+            columns:
+              type: integer
+            mines:
+              type: integer
+            boardStatus:
+              $ref: "#/definitions/BoardStatus"
+  BoardStatus:
+    type: array
+    items:
+      type: object
+      properties:
+        adjacent:
+          type: integer
+          description: The number of adjacent mines.
+        flag:
+          type: string
+          description: flag option.
+        hasMine:
+          type: boolean
+          description: Describes if there is a mine or not.
+        revealed:
+          type: boolean
+          description: Describes if the position is revealed or not.
+        x:
+          type: integer
+          description: X coordinate of the board.
+        y:
+          type: integer
+          description: Y coordinate of the board.
   ErrorResponse:
     required:
       - message
