@@ -23,3 +23,8 @@
 .board-header div {
     display: inline-block;
 }
+
+#game {
+    border: 1px solid;
+    display: inline-block;
+}

@@ -21,9 +21,9 @@ class Minesweeper {
    * @return void
    */
   initMatrix() {
-    for(let x = 0; x < this.rows; x += 1) {
+    for(let x = 0; x < this.columns; x += 1) {
       this.board[x] = [];
-      for(let y = 0; y < this.columns; y += 1) {
+      for(let y = 0; y < this.rows; y += 1) {
         this.board[x][y] = {
           revealed: false,
           hasMine: false,
@@ -140,7 +140,7 @@ class Minesweeper {
    * @return {Object}
    */
   flag(x, y) {
-    const boardPlace = this.board[y][x];
+    const boardPlace = this.board[x][y];
     if (!boardPlace.revealed) {
       if (boardPlace.flag === '') {
         boardPlace.flag = '!';

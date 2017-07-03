@@ -15,28 +15,32 @@ var boardComponent = (function() {
            </div>
     `;
   }
-  
+
   function increaseTimer() {
     timeCounter += 1;
     const timeCounterElement = document.querySelectorAll('.time-counter')[0];
     timeCounterElement.innerHTML = timeCounter;
   }
-  
+
   function renderGameBoard(columns, rows, mines) {
     let markup = renderInformationBoard(mines);
-    for (let colIndex = 0; colIndex < columns; colIndex += 1) {
-      for (let rowIndex = 0; rowIndex < rows; rowIndex += 1) {
+    for (let rowIndex = 0; rowIndex < rows; rowIndex += 1) {
+      for (let colIndex = 0; colIndex < columns; colIndex += 1) {
          markup += `<div class="board-element" id="${colIndex}-${rowIndex}">&nbsp;</div>`;
       }
       markup += '<br>';
     }
     return markup;
   }
-  
+
   function isElementRevealed(element) {
     return element.classList.contains(boardElementSelectedClass);
   }
-  
+
+  function isElementFlagged(element) {
+    return element.textContent === '!' || element.textContent === '?';
+  }
+
   function renderElementState(data) {
     const field = document.getElementById(`${data.x}-${data.y}`);
     if (data.hasMine) {
@@ -46,15 +50,17 @@ var boardComponent = (function() {
       field.classList.add(boardElementSelectedClass);
       if (data.adjacent > 0) {
         field.innerHTML = data.adjacent;
+      } else {
+        field.innerHTML = '&nbsp;';
       }
     } else {
       field.innerHTML = data.flag === '' ? '&nbsp;' : data.flag;
     }
   }
-  
+
   function elementClickHandler(event) {
     const element = event.currentTarget;
-    if (!isElementRevealed(element)) {
+    if (!isElementRevealed(element) && !isElementFlagged(element)) {
       const customEvent = new CustomEvent(ELEMENT_REVEALED_EVENT, {
         detail: {
           x: element.id.split('-')[0],
@@ -66,24 +72,30 @@ var boardComponent = (function() {
       element.dispatchEvent(customEvent);
     }
   }
-  
+
   function elementRightClickHandler(event) {
-    const element = event.currentTarget;
     event.preventDefault();
-    const customEvent = new CustomEvent(FLAG_BUTTON_PRESSED_EVENT, {
-      bubbles: true,
-      cancelable: false
-    });
-    element.dispatchEvent(customEvent);
+    const element = event.currentTarget;
+    if (!isElementRevealed(element)) {
+      const customEvent = new CustomEvent(FLAG_BUTTON_PRESSED_EVENT, {
+        detail: {
+          x: element.id.split('-')[0],
+          y: element.id.split('-')[1],
+        },
+        bubbles: true,
+        cancelable: false
+      });
+      element.dispatchEvent(customEvent);
+    }
     return false;
   }
-  
+
   function renderBoardState(state) {
     for (const fieldData of state) {
       renderElementState(fieldData);
     }
   }
-  
+
   function startButtonClickHandler(event) {
     const element = event.currentTarget;
     const customEvent = new CustomEvent(START_BUTTON_PRESSED_EVENT, {
@@ -92,10 +104,14 @@ var boardComponent = (function() {
     });
     element.dispatchEvent(customEvent);
   }
-  
+
+  function stopTimer() {
+    clearInterval(timerInterval);
+  }
+
   function initializeBoard(containerElement, columns, rows, mines) {
     containerElement.innerHTML = renderGameBoard(columns, rows, mines);
-    
+
     //Append event handlers
     const boardElements = document.querySelectorAll('.board-element');
     for (let i = 0; i < boardElements.length; i+= 1) {
@@ -105,16 +121,17 @@ var boardComponent = (function() {
     }
     const startButton = document.getElementById('start-button');
     startButton.addEventListener('click', startButtonClickHandler);
-    
+
     timeCounter = 0;
-    clearInterval(timerInterval);
+    stopTimer();
     //Start timer
     timerInterval = setInterval(increaseTimer, 1000);
   }
-  
+
   return {
     initializeBoard,
     renderBoardState,
+    stopTimer,
     events: {
       START_BUTTON_PRESSED_EVENT,
       ELEMENT_REVEALED_EVENT,
